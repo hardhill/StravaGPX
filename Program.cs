@@ -28,7 +28,7 @@ namespace StravaGPX
                 //очередная ссылка
                 repo.SaveLog(1, (int)BotStatus.WORK, "Обработка link", (int)MessageType.INFORM);
                 String queue_link = parser.GetLink();
-                repo.SaveLog(1, (int)BotStatus.WORK, "link: " + queue_link.Substring(0, 120) + "...", (int)MessageType.SUCCESS);
+                repo.SaveLog(1, (int)BotStatus.WORK, "link: " + queue_link.Substring(0) + "...", (int)MessageType.SUCCESS);
                 Console.WriteLine(queue_link);
                 try
                 {
