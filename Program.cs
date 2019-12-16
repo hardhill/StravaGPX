@@ -10,7 +10,7 @@ namespace StravaGPX
         static void Main(string[] args)
         {
             Console.WriteLine("STRAVA GPX loader =========================================== v. 0.1");
-
+            Console.Write("Размер словаря ссылок: "); string r = Console.ReadLine();
             Repo repo = new Repo();
             repo.CreateBotLog();
             repo.CreateDict();
@@ -19,7 +19,7 @@ namespace StravaGPX
             //===========================================================
             repo.SaveLog(1, (int)BotStatus.WORK, "Робот начал работу", (int)MessageType.INFORM);
             var html_link = @"https://yandex.ru/";
-            Parser parser = new Parser(html_link, 256);
+            Parser parser = new Parser(html_link, Convert.ToInt32(r));
 
             HtmlWeb web = new HtmlWeb();
 
