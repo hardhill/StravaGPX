@@ -47,6 +47,10 @@ namespace StravaGPX
             return _links.Count;
         }
 
+        public List<string> GetDict(){
+            return _dict.GetDict();
+        }
+
         private class LinkDict
         {
             private List<string> _dict;
@@ -71,6 +75,9 @@ namespace StravaGPX
             }
             public int Count(){
                 return _dict.Count;
+            }
+            public List<string> GetDict(){
+                return _dict;
             }
         }
     }
