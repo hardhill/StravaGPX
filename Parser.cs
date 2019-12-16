@@ -8,8 +8,8 @@ namespace StravaGPX
     {
         private Queue<String> _links;
         private LinkDict _dict;
-        
-        public Parser(String link, int max_queue = 2 ^ 16)
+
+        public Parser(String link, int max_queue = 1024)
         {
             _links = new Queue<string>();
             _dict = new LinkDict(max_queue);
@@ -24,7 +24,7 @@ namespace StravaGPX
             int count = 0;
             foreach (string link in list)
             {
-                ;
+                
                 if (_dict.Add(link))
                 {
                     _links.Enqueue(link);
@@ -58,12 +58,13 @@ namespace StravaGPX
             
             public bool Add(String link)
             {
-                if (!_dict.Contains(link)&&_dict.Count<max_queue)
+                if (_dict.Contains(link)||_dict.Count>=max_queue)
                 {
-                    _dict.Add(link);
-                    return true;
+                    return false;
+                    
                 }
-                return false;
+                _dict.Add(link);
+                    return true;
             }
             public bool Contains(string link){
                 return _dict.Contains(link);

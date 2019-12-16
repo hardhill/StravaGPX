@@ -55,10 +55,12 @@ namespace StravaGPX
                     HtmlAttribute att = link.Attributes["href"];
                     hrefTags.Add(att.Value);
                 }
+                Console.Write("=============Fount links: ");    Console.WriteLine(hrefTags.Count);
                 parser.AddList(hrefTags);
                 Console.Write("================ dict value: ");    Console.WriteLine(parser.GetVolueDict());
-                }catch{
-
+                Console.Write("================ queue value: ");    Console.WriteLine(parser.StackSize());
+                }catch(Exception e){
+                    Console.Write("=ERROR= : ");    Console.WriteLine(e.Message);
                 }
                 
             } while (parser.StackSize() > 0);
