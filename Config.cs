@@ -69,6 +69,13 @@ namespace StravaGPX
             return otvet;
         }
 
+        public bool UseProxy()
+        {
+            IConfigurationRoot configurationRoot = builder.Build();
+            IConfigurationSection section = configurationRoot.GetSection("NoProxy");
+            string otvet = section.Value;
+            return otvet.Equals("1")?true:false;
+        }
         public struct Proxy
         {
             public string Host;

@@ -29,7 +29,7 @@ namespace StravaGPX
             Parser parser = new Parser(html_link, dictVolume);
             
             HtmlWeb web = new HtmlWeb();
-
+            HtmlDocument htmlDoc;
             do
             {
                 //очередная ссылка
@@ -39,9 +39,15 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-                    
-                    
-                    HtmlDocument htmlDoc = web.Load(queue_link,proxy.Host , proxy.Port ,proxy.User,proxy.Password);
+
+                    if (config.UseProxy())
+                    {
+                        htmlDoc = web.Load(queue_link, proxy.Host, proxy.Port, proxy.User, proxy.Password);
+                    }
+                    else
+                    {
+                        htmlDoc = web.Load(queue_link);
+                    }
                     List<string> hrefTags = new List<string>();
 
                     foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
