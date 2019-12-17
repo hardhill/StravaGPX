@@ -40,16 +40,19 @@ namespace StravaGPX
             return $"Host={host};Port={port};Database={db};Username={user};Password={pass};";
         }
 
-        public void GetProxy(string host,int port)
+        public Proxy GetProxy()
         {
+            Proxy proxy;
+            proxy.Host = ""; proxy.Port = 0; proxy.User = ""; proxy.Password = "";
             IConfigurationRoot configurationRoot = builder.Build();
             IConfigurationSection section = configurationRoot.GetSection("Proxy");
-            host = section.GetSection("Host").Value;
+            proxy.Host = section.GetSection("Host").Value;
             try
             {
-                port = Convert.ToInt32(section.GetSection("Port").Value);
+                proxy.Port = Convert.ToInt32(section.GetSection("Port").Value);
             }
-            catch { port = 0; }
+            catch { proxy.Port = 0; }
+            return proxy;
         }
         public int GetDictVolume()
         {
@@ -57,6 +60,28 @@ namespace StravaGPX
             IConfigurationSection section = configurationRoot.GetSection("Parsing");
             string otvet = section.GetSection("Dict").Value;
             return otvet==""?0:Convert.ToInt32(otvet);
+        }
+        public string GetUrl()
+        {
+            IConfigurationRoot configurationRoot = builder.Build();
+            IConfigurationSection section = configurationRoot.GetSection("Parsing");
+            string otvet = section.GetSection("Url").Value;
+            return otvet;
+        }
+
+        public struct Proxy
+        {
+            public string Host;
+            public int Port;
+            public string User;
+            public string Password;
+            public Proxy(string host, int port, string user, string password)
+            {
+                Host = host;
+                Port = port;
+                User = user;
+                Password = password;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using static StravaGPX.Config;
 
 namespace StravaGPX
 {
@@ -13,19 +14,20 @@ namespace StravaGPX
             Config config = new Config();
             String connectionString = config.ConnectionMySql();
             int dictVolume = config.GetDictVolume();
-            
-            
-            
+            //создание таблиц
             RepoMy repo = new RepoMy(connectionString);
             repo.CreateBotLog();
             repo.CreateDict();
             repo.CreateDict();
             Console.WriteLine("Tables are created");
-            //===========================================================
-            repo.SaveLog(1, (int)BotStatus.WORK, "Робот начал работу", (int)MessageType.INFORM);
-            var html_link = @"https://yandex.ru/";
+            //=============================================================================================
+            repo.SaveLog(1, (int)BotStatus.WORK, "Бот начал работу", (int)MessageType.INFORM);
+            // читаем конфигурацию
+            var html_link = config.GetUrl();
+            Proxy proxy = config.GetProxy();
+            //настройка парсера
             Parser parser = new Parser(html_link, dictVolume);
-
+            
             HtmlWeb web = new HtmlWeb();
 
             do
@@ -37,10 +39,9 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-                    var proxy_host = "";
-                    var proxy_port = 0;
-                    config.GetProxy(proxy_host, proxy_port);
-                    HtmlDocument htmlDoc = web.Load(queue_link, proxy_host, proxy_port,"","");
+                    
+                    
+                    HtmlDocument htmlDoc = web.Load(queue_link,proxy.Host , proxy.Port ,proxy.User,proxy.Password);
                     List<string> hrefTags = new List<string>();
 
                     foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
