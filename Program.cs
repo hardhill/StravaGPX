@@ -9,7 +9,7 @@ namespace StravaGPX
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("STRAVA GPX loader (MySQL edition) ===================================== v. 0.2");
+            Console.WriteLine("Inet parser (MySQL edition) ===================================== v. 0.2");
             Config config = new Config();
             String connectionString = config.ConnectionMySql();
             int dictVolume = config.GetDictVolume();
