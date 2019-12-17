@@ -10,8 +10,13 @@ namespace StravaGPX
         static void Main(string[] args)
         {
             Console.WriteLine("STRAVA GPX loader (MySQL edition) ===================================== v. 0.2");
-            Console.Write("Размер словаря ссылок: "); string r = Console.ReadLine();
-            RepoMy repo = new RepoMy();
+            Config config = new Config();
+            String connectionString = config.ConnectionMySql();
+            int dictVolume = config.GetDictVolume();
+            
+            
+            
+            RepoMy repo = new RepoMy(connectionString);
             repo.CreateBotLog();
             repo.CreateDict();
             repo.CreateDict();
@@ -19,7 +24,7 @@ namespace StravaGPX
             //===========================================================
             repo.SaveLog(1, (int)BotStatus.WORK, "Робот начал работу", (int)MessageType.INFORM);
             var html_link = @"https://yandex.ru/";
-            Parser parser = new Parser(html_link, Convert.ToInt32(r));
+            Parser parser = new Parser(html_link, dictVolume);
 
             HtmlWeb web = new HtmlWeb();
 
@@ -32,7 +37,10 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-                    HtmlDocument htmlDoc = web.Load(queue_link, "10.3.239.2", 3128,"","");
+                    var proxy_host = "";
+                    var proxy_port = 0;
+                    config.GetProxy(proxy_host, proxy_port);
+                    HtmlDocument htmlDoc = web.Load(queue_link, proxy_host, proxy_port,"","");
                     List<string> hrefTags = new List<string>();
 
                     foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
@@ -66,8 +74,8 @@ namespace StravaGPX
             }
             repo.SaveLog(1, (int)BotStatus.CLOSE, "Робот выключен", (int)MessageType.INFORM);
 
-            Console.Write("End of programm. Press Enter...");
-            Console.ReadLine();
+            //Console.Write("End of programm. Press Enter...");
+            //Console.ReadLine();
         }
 
     }
