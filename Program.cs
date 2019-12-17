@@ -8,7 +8,7 @@ namespace StravaGPX
 {
     class Program
     {
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
             Console.WriteLine("Inet parser (MySQL edition) ===================================== v. 0.2");
             Config config = new Config();
@@ -29,7 +29,10 @@ namespace StravaGPX
             Parser parser = new Parser(html_link, dictVolume);
             
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument htmlDoc;
+            //альтернативный загрузчик страниц
+            Webber webber = new Webber();
+
+            HtmlDocument htmlDoc = new HtmlDocument();
             do
             {
                 //очередная ссылка
@@ -39,14 +42,17 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-
+                    
                     if (config.UseProxy())
                     {
-                        htmlDoc = web.Load(queue_link, proxy.Host, proxy.Port, proxy.User, proxy.Password);
+                        //htmlDoc = web.Load(queue_link, proxy.Host, proxy.Port, proxy.User, proxy.Password);
+                        string html_string = await webber.LoadAsync(queue_link);
+                        htmlDoc.LoadHtml(html_string);
                     }
                     else
                     {
-                        htmlDoc = web.Load(queue_link);
+                        string html_string = await webber.LoadAsync(queue_link);
+                        htmlDoc.LoadHtml(html_string);
                     }
                     List<string> hrefTags = new List<string>();
 
@@ -81,8 +87,8 @@ namespace StravaGPX
             }
             repo.SaveLog(1, (int)BotStatus.CLOSE, "Робот выключен", (int)MessageType.INFORM);
 
-            //Console.Write("End of programm. Press Enter...");
-            //Console.ReadLine();
+            Console.Write("End of programm. Press Enter...");
+            Console.ReadLine();
         }
 
     }
