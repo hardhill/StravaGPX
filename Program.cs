@@ -9,9 +9,9 @@ namespace StravaGPX
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("STRAVA GPX loader =========================================== v. 0.1");
+            Console.WriteLine("STRAVA GPX loader (MySQL edition) ===================================== v. 0.2");
             Console.Write("Размер словаря ссылок: "); string r = Console.ReadLine();
-            Repo repo = new Repo();
+            RepoMy repo = new RepoMy();
             repo.CreateBotLog();
             repo.CreateDict();
             repo.CreateDict();
@@ -32,7 +32,7 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-                    var htmlDoc = web.Load(queue_link);
+                    HtmlDocument htmlDoc = web.Load(queue_link, "10.3.239.2", 3128,"","");
                     List<string> hrefTags = new List<string>();
 
                     foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
