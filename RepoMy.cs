@@ -26,7 +26,6 @@ namespace StravaGPX
             "message varchar(200) ," +
             "work_result int(11) DEFAULT '0', KEY id_key (id_key)) ENGINE = InnoDB AUTO_INCREMENT =0 DEFAULT CHARSET = utf8; ";
 
-
             try
             {
                 var comm = new MySqlCommand(sql, conn);
@@ -87,7 +86,7 @@ namespace StravaGPX
             conn.Open();
             foreach (string link in links)
             {
-                using (var cmd = new MySqlCommand("INSERT INTO protocol_botdict (id_bot,datatime,link)" +
+                using (var cmd = new MySqlCommand("INSERT INTO protocol_dict (id_bot,datatime,link)" +
                      " VALUES (@pbot,@pdt,@plink)", conn))
                 {
                     cmd.Parameters.AddWithValue("pbot", bot);

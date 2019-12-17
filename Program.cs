@@ -2,6 +2,7 @@
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using static StravaGPX.Config;
 
 namespace StravaGPX
 {
@@ -9,20 +10,26 @@ namespace StravaGPX
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("STRAVA GPX loader (MySQL edition) ===================================== v. 0.2");
-            Console.Write("Размер словаря ссылок: "); string r = Console.ReadLine();
-            RepoMy repo = new RepoMy();
+            Console.WriteLine("Inet parser (MySQL edition) ===================================== v. 0.2");
+            Config config = new Config();
+            String connectionString = config.ConnectionMySql();
+            int dictVolume = config.GetDictVolume();
+            //создание таблиц
+            RepoMy repo = new RepoMy(connectionString);
             repo.CreateBotLog();
             repo.CreateDict();
             repo.CreateDict();
             Console.WriteLine("Tables are created");
-            //===========================================================
-            repo.SaveLog(1, (int)BotStatus.WORK, "Робот начал работу", (int)MessageType.INFORM);
-            var html_link = @"https://yandex.ru/";
-            Parser parser = new Parser(html_link, Convert.ToInt32(r));
-
+            //=============================================================================================
+            repo.SaveLog(1, (int)BotStatus.WORK, "Бот начал работу", (int)MessageType.INFORM);
+            // читаем конфигурацию
+            var html_link = config.GetUrl();
+            Proxy proxy = config.GetProxy();
+            //настройка парсера
+            Parser parser = new Parser(html_link, dictVolume);
+            
             HtmlWeb web = new HtmlWeb();
-
+            HtmlDocument htmlDoc;
             do
             {
                 //очередная ссылка
@@ -32,7 +39,15 @@ namespace StravaGPX
                 Console.WriteLine(queue_link);
                 try
                 {
-                    HtmlDocument htmlDoc = web.Load(queue_link, "10.3.239.2", 3128,"","");
+
+                    if (config.UseProxy())
+                    {
+                        htmlDoc = web.Load(queue_link, proxy.Host, proxy.Port, proxy.User, proxy.Password);
+                    }
+                    else
+                    {
+                        htmlDoc = web.Load(queue_link);
+                    }
                     List<string> hrefTags = new List<string>();
 
                     foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
@@ -66,8 +81,8 @@ namespace StravaGPX
             }
             repo.SaveLog(1, (int)BotStatus.CLOSE, "Робот выключен", (int)MessageType.INFORM);
 
-            Console.Write("End of programm. Press Enter...");
-            Console.ReadLine();
+            //Console.Write("End of programm. Press Enter...");
+            //Console.ReadLine();
         }
 
     }
