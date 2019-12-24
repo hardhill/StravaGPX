@@ -46,7 +46,7 @@ namespace StravaGPX
                     if (config.UseProxy())
                     {
                         //htmlDoc = web.Load(queue_link, proxy.Host, proxy.Port, proxy.User, proxy.Password);
-                        string html_string = await webber.LoadAsync(queue_link);
+                        string html_string = await webber.LoadAsync(queue_link);//TODO = загрузку сделать без параметра
                         htmlDoc.LoadHtml(html_string);
                     }
                     else
@@ -74,6 +74,8 @@ namespace StravaGPX
                 }
 
             } while (parser.StackSize() > 0);
+
+
             repo.SaveLog(1, (int)BotStatus.WORK, "Работа по обработке завершена", (int)MessageType.SUCCESS);
             repo.SaveLog(1, (int)BotStatus.WORK, "Записываю словарь", (int)MessageType.INFORM);
             try
